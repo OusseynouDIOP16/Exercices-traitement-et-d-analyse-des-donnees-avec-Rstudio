@@ -1,0 +1,221 @@
+---
+title: "Rapport"
+author: "DIOP_Ousseynou"
+date: '2023-05-07'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+
+
+## Question 1-2-3-4
+
+```{r setup,error=FALSE, warning=FALSE, message=TRUE}
+knitr::opts_chunk$set(echo=TRUE, error=FALSE, warning=FALSE, message=TRUE)
+CA<- "C:\\Users\\dell\\Desktop\\ENSAE\\ISEP2\\Semestre_2\\Programmation R\\Devoir\\Traitement"
+df_Diop<- read.csv2(paste0(CA,"\\df_Diop.csv"))
+head(df_Diop)
+tail(df_Diop)
+View(df_Diop)
+```
+
+## Question 5
+
+
+```{r}
+knitr::opts_chunk$set(echo=TRUE, error=FALSE, warning=FALSE, message=TRUE)
+d.var.quant <- function(baseD, var){
+  library(ggplot2)
+  # Calcul des tendances centrales
+  moy <- mean(baseD[[var]])
+  med <- median(baseD[[var]])
+  et <- sd(baseD[[var]])
+  
+  # Affichage des tendances centrales
+  cat("Tendances centrales:\n")
+  cat(paste0("Moyenne: ", round(moy, 2), "\n"))
+  cat(paste0("Médiane: ", med, "\n"))
+  cat(paste0("Écart-type: ", round(et, 2), "\n"))
+  
+  # Graphiques
+  hist(baseD[[var]], main = paste0("Histogramme de la variable ", var), xlab = var)
+  boxplot(baseD[[var]], main = paste0("Boxplot de la variable ", var), ylab = var)
+
+  # Intervalle de confiance
+  conf_int <- t.test(baseD[[var]], conf.level = 0.95)$conf.int
+  cat(paste0("Intervalle de confiance à 95%: [", round(conf_int[1], 2), ", ",   round(conf_int[2], 2), "]\n"))
+  
+  print(hist)
+  print(boxplot)
+  
+}
+
+
+```
+
+### age
+
+```{r}
+d.var.quant(df_Diop,"age")
+```
+
+
+### moy
+
+```{r}
+d.var.quant(df_Diop,"moy")
+```
+
+
+### salaire
+
+```{r}
+d.var.quant(df_Diop,"salaire")
+```
+
+
+### nombre_pas
+
+```{r}
+d.var.quant(df_Diop,"nombre_pas")
+```
+
+
+### jour_absent
+
+```{r}
+d.var.quant(df_Diop,"jour_absent")
+```
+
+
+
+
+## d.var.quali
+
+```{r}
+knitr::opts_chunk$set(echo=TRUE, error=FALSE, warning=FALSE, message=TRUE)
+d.var.quali <- function(var){
+  # Création d'un tableau de fréquences
+  freq_table <- table(var)
+  # Calcul des proportions
+  prop_table <- prop.table(freq_table)
+  # Affichage du tableau de fréquences et des proportions
+  cat("Tableau de fréquences :\n")
+  print(freq_table)
+  cat("\nTableau des proportions :\n")
+  print(prop_table)
+  # Création d'un graphique en barres
+  barplot(freq_table, main="Distribution de la variable", xlab="Valeurs", ylab="Fréquences", col=rainbow(length(freq_table)))
+  # Création d'un diagramme en secteurs
+  pie(freq_table, main="Répartition de la variable", col=rainbow(length(freq_table)))
+
+}
+
+```
+
+
+### Genre
+```{r}
+genre<-df_Diop$genre
+d.var.quali(genre)
+```
+
+### niveau_etude
+
+```{r}
+niveau_etude<-df_Diop$niveau_etude
+d.var.quali(niveau_etude)
+
+```
+
+### lettre_preferee
+```{r}
+lettre_preferee<-df_Diop$lettre_preferee
+d.var.quali(lettre_preferee)
+
+```
+
+### voyage_etude
+```{r}
+voyage_etude<-df_Diop$voyage_etude
+d.var.quali(voyage_etude)
+```
+
+
+## Question 6
+
+### variables quantitatives
+
+Comme les variables "moy" et "salaire" dans la base de données "df_Diop" sont toutes les deux quantitatives, nous pouvons examiner leur relation à l'aide d'un graphique de dispersion et d'un coefficient de corrélation.
+
+Tout d'abord, nous allons tracer le graphique de dispersion à l'aide de la fonction "plot" de R :
+```{r}
+plot(df_Diop$moy, df_Diop$salaire, main="Relation entre le Moy et le Salaire", xlab="Moy", ylab="Salaire", col="steelblue")
+
+```
+
+Ensuite, nous allons calculer le coefficient de corrélation entre les deux variables à l'aide de la fonction "cor" de R :
+
+```{r}
+cor(df_Diop$moy, df_Diop$salaire)
+
+```
+Le coefficient de corrélation est de 0.001833772, ce qui suggère qu'il n'y a pas de relation   entre les deux variables.
+
+passons la la rg
+
+```{r}
+model <- lm(salaire ~ moy, data=df_Diop)
+summary(model)
+plot(df_Diop$moy, df_Diop$salaire, main="Relation entre le Moy et le Salaire", xlab="Moy", ylab="Salaire", col="steelblue")
+abline(model, col="red")
+
+```
+
+### Variables qualitatives
+
+nous souhaitons décrire la liaison entre le genre et le niveau d'étude dans la base de données df_Diop. Nous pouvons donc créer un tableau de contingence qui présente le nombre d'individus en fonction de leur genre et de leur niveau d'étude.
+
+```{r}
+table(df_Diop$genre, df_Diop$niveau_etude)
+
+```
+ avec grapgique:
+ 
+```{r}
+ggplot(df_Diop, aes(x=genre, fill=niveau_etude)) +
+  geom_bar(position="dodge") +
+  ggtitle("Répartition des niveaux d'étude en fonction du genre") +
+  xlab("Genre") +
+  ylab("Nombre d'individus") +
+  scale_fill_discrete(name="Niveau d'étude")
+
+```
+ 
+
+### liason entre genre et salaire
+Tout d'abord, nous pouvons créer une table de contingence pour visualiser la distribution des salaires en fonction du genre .
+```{r}
+table(df_Diop$genre, df_Diop$salaire)
+
+```
+
+utilisons un test d'indépendance du Chi-squared pour déterminer s'il existe une association significative entre le genre et le salaire :
+
+```{r}
+chisq.test(df_Diop$genre, df_Diop$salaire)
+
+```
+
+Pour explorer la relation linéaire entre le genre et le salaire, nous pouvons tracer un diagramme de dispersion:
+```{r}
+library(ggplot2)
+ggplot(df_Diop, aes(x = genre, y = salaire)) +
+  geom_point(color = "steelblue") +
+  ggtitle("Relation entre le genre et le salaire") +
+  xlab("Genre") +
+  ylab("Salaire")
+
+```

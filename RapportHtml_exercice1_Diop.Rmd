@@ -1,0 +1,136 @@
+---
+title: "Rapport Devoir1 "
+author: "DIOP_Ousseynou"
+date: '2023-05-07'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Commentaire du code:
+
+# Exercice 1:
+
+## Introduction
+
+Ceci est un rapport généré à partir de données simulées pour l'exercice 1. Le but de cet exercice est de se familiariser avec la génération de données en R et de créer un data frame à partir de ces données.
+
+## 1) voir le nom du script
+
+Le commentaire "voir le nom du script" indique que l'on doit chercher le nom du fichier contenant le script, qui est généralement indiqué en haut du script.
+
+## 2) variables
+
+Ce bloc de code définit plusieurs variables quantitatives avec des valeurs aléatoires :
+
+- La variable "age" avec des valeurs aléatoires entières entre 17 et 46.
+- La variable "moy" avec des valeurs aléatoires décimales entre 11 et 19.
+- La variable "salaire" avec des valeurs aléatoires entières entre 69 000 et 199 900.
+- La variable "nombre_pas" avec des valeurs aléatoires entières entre 200 et 2000.
+- La variable "jour_absent" avec des valeurs aléatoires entières entre 1 et 30.
+
+Ensuite, ce bloc de code définit plusieurs variables qualitatives de type factors avec des valeurs aléatoires :
+
+- La variable "nom" avec des noms prédéfinis de manière aléatoire.
+- La variable "genre" avec les modalités "Homme" et "Femme".
+- La variable "niveau_etude" avec des niveaux d'étude prédéfinis de manière aléatoire.
+- La variable "lettre_preferee" avec des lettres prédéfinies de manière aléatoire.
+- La variable "voyage_etude" avec les modalités "oui" et "non".
+
+## 3-dataframe
+
+Enfin, ce bloc de code combine toutes les variables créées ci-dessus dans un data frame nommé "df_Diop". La fonction "data.frame" permet de créer un data frame à partir des variables spécifiées. La fonction "as.numeric" est utilisée pour convertir les variables quantitatives en valeurs numériques. Les options "stringsAsFactors = FALSE" sont spécifiées pour empêcher les variables qualitatives d'être converties en facteurs par défaut. Enfin, la fonction "View" est utilisée pour visualiser le data frame dans une nouvelle fenêtre.
+
+# ANALYSE DES DONNEES
+```{r}
+# Définir le chemin d'accès au dossier contenant le fichier csv
+CA <- "C:\\Users\\dell\\Desktop\\ENSAE\\ISEP2\\Semestre_2\\Programmation R\\Devoir\\traitement"
+
+# Lire le fichier csv et stocker les données dans un objet data frame
+df_Diop <- read.csv2(paste0(CA, "\\df_Diop.csv"))
+
+# Afficher les premières lignes du data frame
+head(df_Diop)
+
+```
+Tout d'abord, examinons la variable d'âge. Nous avons tracé un histogramme pour visualiser la distribution
+```{r}
+
+hist(df_Diop$age, breaks = 20, main = "Distribution de l'âge", xlab = "Âge")
+
+```
+Nous pouvons voir que la distribution est assez symétrique, avec un pic autour de 35 ans. Calculons maintenant quelques statistiques descriptives :
+```{r}
+# Statistiques descriptives
+summary(df_Diop$age)
+
+```
+Nous constatons que l'âge moyen est de 35,36 ans, avec une plage allant de 19 à 50 ans.
+
+
+# Création du boxplot Salaire
+
+
+```{r}
+# Création du boxplot
+boxplot(df_Diop$salaire, main = "Distribution des salaires", ylab = "Salaire")
+
+```
+Nous pouvons voir qu'il y a presque pas de valeurs aberrantes,  globalement la distribution est assez étalée. Calculons maintenant quelques statistiques descriptives :
+```{r}
+# Statistiques descriptives
+summary(df_Diop$salaire)
+
+```
+Nous constatons que le salaire moyen est de 129 714 Fcfa, avec une plage allant de 21 067 à 199 540 Fcfa.
+
+## Quelques variable qualitative
+
+### Genre
+```{r}
+# Création du diagramme en barres
+barplot(table(df_Diop$genre), main = "Répartition par genre", ylab = "Fréquence")
+
+```
+Nous pouvons voir que la répartition entre les sexes est assez équilibrée, avec un peu plus de femmes que d'hommes.
+
+### Niveau d'éducation
+```{r}
+# Création du diagramme en barres
+barplot(table(df_Diop$niveau_etude), main = "Répartition par niveau d'éducation", ylab = "Fréquence")
+# Créer un tableau croisé pour la variable education
+table_educ <- table(df_Diop$niveau_etude)
+
+# Créer un diagramme circulaire pour la variable education
+pie(table_educ, main="Répartition par niveau d'éducation")
+
+
+```
+
+### Quelques tableaux croisés
+
+
+
+```{r}
+library(ggplot2)
+df_Diop$salaire <- as.numeric(df_Diop$salaire)
+
+ggplot(df_Diop, aes(x = age, y = salaire)) +
+  geom_point(color = "steelblue") +
+  ggtitle("Relation entre l'âge et le salaire") +
+  xlab("Âge") +
+  ylab("Salaire")
+
+
+```
+```{r}
+ggplot(df_Diop, aes(x = "", y = moy)) +
+  geom_boxplot(fill = "steelblue", color = "black") +
+  ggtitle("Distribution de la variable 'moy'") +
+  xlab("") +
+  ylab("Moyenne")
+
+```
+
